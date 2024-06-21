@@ -1,0 +1,51 @@
+program             : { func_decl } .
+
+func_decl           : "func" ID "(" [ param_decl { "," param_decl } ] ")" ":" type compound_stmt .
+
+param_decl          : ID ":" type .
+
+type                : "void" | primitive_type | "[" "]" primitive_type .
+
+primitive_type      : "int" | "bool" .
+
+array_decl          : "[" [ expression ] "]" primitive_type .
+
+array_index         : "[" expression "]" .
+
+compound_stmt       : "{" { var_decl } { stmt } [return_stmt] "}" .
+
+var_decl            : "var" ID ":" ([ expression ] primitive_type | array_decl) .
+
+stmt                : compound_stmt | if_stmt | while_stmt | assign_stmt | call_stmt | print_stmt .
+
+if_stmt             : "if" expression compound_stmt [ "else" stmt ] .
+
+while_stmt          : "while" expression compound_stmt .
+
+assign_stmt         : expression "=" expression .
+
+return_stmt         : "return" [ expression ] .
+
+call_stmt           : "call" ID func_expr .
+
+func_expr           : argument_list .
+
+print_stmt          : "print" expression .
+
+argument_list       : "(" [ expression  { ","  expression  } ] ")" .
+
+expression          : or_expr { "or" or_expr } .
+
+or_expr             : and_expr { "and" and_expr } .
+
+and_expr            : relational_expr { ( "==" | "!=" | "<" | "<=" | ">" | ">=" ) relational_expr} .
+
+relational_expr     : additive_expr { ( "+" | "-" ) additive_expr } .
+
+additive_expr       : multiplicative_expr { ( "*" | "/" ) multiplicative_expr } .
+
+multiplicative_expr : { ( "-" | "not" ) } primary_expr  .
+
+primary_expr        : INT | bool_literal | "(" expression ")" | ID [ func_expr | array_index ] .
+
+bool_literal        : "true" | "false" .
